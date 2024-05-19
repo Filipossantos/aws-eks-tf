@@ -98,3 +98,11 @@ module "irsa-ebs-csi" {
   role_policy_arns              = [data.aws_iam_policy.ebs_csi_policy.arn]
   oidc_fully_qualified_subjects = ["system:serviceaccount:kube-system:ebs-csi-controller-sa"]
 }
+resource "null_resource" "eks_cluster_upgrade" {
+  provisioner "local-exec" {
+    command = "aws eks update-kubeconfig --region ${var.region} --name ${local.cluster_name}"
+  }
+}
+module "behavapp" {
+  source = "./behavapp"
+}
